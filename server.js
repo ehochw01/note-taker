@@ -20,7 +20,7 @@ const fs = require('fs');
 const noteData = require('./db/db.json');
 const uuid = require('./helpers/uuid');
 
-const PORT = 3001;
+const PORT = process.env.PORT || 3001;
 
 const app = express();
 
@@ -42,7 +42,6 @@ app.get('/', (req, res) =>
 app.get('/api/notes', (req, res) => {
     // read db.json and return it's contents as JSON
     console.info(`${req.method} request received to get notes`);
-    // res.json(noteData);
     fs.readFile('./db/db.json', 'utf8', (err, data) => {
         if (err) {
           console.error(err);
