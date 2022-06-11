@@ -1,19 +1,3 @@
-/*
-GIVEN a note-taking application
-WHEN I open the Note Taker
-THEN I am presented with a landing page with a link to a notes page
-WHEN I click on the link to the notes page
-THEN I am presented with a page with existing notes listed in the left-hand column, plus empty fields to enter a new note title and the note’s text in the right-hand column
-WHEN I enter a new note title and the note’s text
-THEN a Save icon appears in the navigation at the top of the page
-WHEN I click on the Save icon
-THEN the new note I have entered is saved and appears in the left-hand column with the other existing notes
-WHEN I click on an existing note in the list in the left-hand column
-THEN that note appears in the right-hand column
-WHEN I click on the Write icon in the navigation at the top of the page
-THEN I am presented with empty fields to enter a new note title and the note’s text in the right-hand column
-*/
-
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
@@ -61,9 +45,8 @@ app.post('/api/notes', (req, res) => {
         const newNote = {
             title,
             text,
-            id: uuid()
             // give each note a unique id when it's saved
-
+            id: uuid()
         }
         // add the note to the db.json file
         fs.readFile('./db/db.json', 'utf8', (err, data) => {
@@ -106,15 +89,11 @@ app.delete('/api/notes/:id', (req, res) => {
 
     fs.readFile('./db/db.json', 'utf8', (err, data) => {
         if (err) {
-            console.log('we out here');
             console.log(err);
             return res.status(500).json(err);
         } else {
-            console.log('hello');
             var parsedNotes = JSON.parse(data);
             const isValidId = parsedNotes.findIndex(note => note.id == id);
-            console.log("parsedNotes: ");
-            console.log(parsedNotes);
             if (isValidId > -1) {
                 parsedNotes.splice(isValidId, 1);
                 fs.writeFile(
@@ -131,7 +110,7 @@ app.delete('/api/notes/:id', (req, res) => {
             }
         }
     });
-  });
+});
 
 app.listen(PORT, () =>
   console.info(`Example app listening at http://localhost:${PORT} 🚀`)
