@@ -16,9 +16,14 @@ THEN I am presented with empty fields to enter a new note title and the note’s
 
 const express = require('express');
 const path = require('path');
+const fs = require('fs');
+const noteData = require('./db/db.json');
 
 const app = express();
 const PORT = 3001;
+
+app.use(express.json());
+// app.use(express.static('public'));
 
 // html routes
 // GET /notes should return the notes.html
@@ -31,6 +36,10 @@ app.get('/', (req, res) =>
 );
 
 // GET /api/notes should read the db.json and return all saved notes as JSON
+app.get('/api/notes', (req, res) => {
+    // read db.json and return it's contents as JSON
+    res.json()
+});
 
 // POST /api/notes should receive a new note to save on the request body
 // add it to the db.json file
