@@ -13,3 +13,28 @@ THEN that note appears in the right-hand column
 WHEN I click on the Write icon in the navigation at the top of the page
 THEN I am presented with empty fields to enter a new note title and the note’s text in the right-hand column
 */
+
+const express = require('express');
+const path = require('path');
+
+const app = express();
+const PORT = 3001;
+
+// html routes
+// GET /notes should return the notes.html
+
+// GET * should return the index.html
+
+// GET /api/notes should read the db.json and return all saved notes as JSON
+
+// POST /api/notes should receive a new note to save on the request body
+// add it to the db.json file
+// give each note a unique id when it's saved using an npm package
+
+// return the new note to the client
+
+// deleteNote delete request
+
+app.listen(PORT, () =>
+  console.info(`Example app listening at http://localhost:${PORT} 🚀`)
+);
