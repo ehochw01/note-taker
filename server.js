@@ -17,6 +17,7 @@ THEN I am presented with empty fields to enter a new note title and the note’s
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
+const noteData = require('./db/db.json');
 const uuid = require('./helpers/uuid');
 
 const PORT = 3001;
@@ -40,7 +41,17 @@ app.get('/', (req, res) =>
 // GET /api/notes should read the db.json and return all saved notes as JSON
 app.get('/api/notes', (req, res) => {
     // read db.json and return it's contents as JSON
-    res.json(noteData);
+    console.info(`${req.method} request received to get notes`);
+    // res.json(noteData);
+    fs.readFile('./db/db.json', 'utf8', (err, data) => {
+        if (err) {
+          console.error(err);
+          res.status(500).json(err);
+        } else {
+            console.log(data);
+            res.status(201).json(JSON.parse(data));
+        }
+      });
 });
 
 // POST /api/notes should receive a new note to save on the request body
