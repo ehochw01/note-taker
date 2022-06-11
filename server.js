@@ -47,7 +47,6 @@ app.get('/api/notes', (req, res) => {
           console.error(err);
           res.status(500).json(err);
         } else {
-            console.log(data);
             res.status(201).json(JSON.parse(data));
         }
       });
@@ -92,7 +91,6 @@ app.post('/api/notes', (req, res) => {
             body: newNote,
           };
       
-        console.log(response);
         res.status(201).json(response);
     } else {
         res.status(500).json('Error in posting review');
@@ -102,6 +100,38 @@ app.post('/api/notes', (req, res) => {
 
 
 // deleteNote delete request, bonus
+app.delete('/api/notes/:id', (req, res) => {
+    const { id } = req.params;
+    console.log (`Deleting note with an id of ${id}`);
+
+    fs.readFile('./db/db.json', 'utf8', (err, data) => {
+        if (err) {
+            console.log('we out here');
+            console.log(err);
+            return res.status(500).json(err);
+        } else {
+            console.log('hello');
+            var parsedNotes = JSON.parse(data);
+            const isValidId = parsedNotes.findIndex(note => note.id == id);
+            console.log("parsedNotes: ");
+            console.log(parsedNotes);
+            if (isValidId > -1) {
+                parsedNotes.splice(isValidId, 1);
+                fs.writeFile(
+                    './db/db.json',
+                    JSON.stringify(parsedNotes, null, 4),
+                    (writeErr) =>
+                      writeErr
+                        ? console.error(writeErr)
+                        : console.info('Successfully updated reviews!')
+                );
+                return res.send();
+            } else {
+                return res.json('No match found');
+            }
+        }
+    });
+  });
 
 app.listen(PORT, () =>
   console.info(`Example app listening at http://localhost:${PORT} 🚀`)
