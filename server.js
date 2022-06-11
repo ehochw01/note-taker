@@ -17,13 +17,15 @@ THEN I am presented with empty fields to enter a new note title and the note’s
 const express = require('express');
 const path = require('path');
 const fs = require('fs');
-const noteData = require('./db/db.json');
+const uuid = require('./helpers/uuid');
 
-const app = express();
 const PORT = 3001;
 
+const app = express();
+
 app.use(express.json());
-// app.use(express.static('public'));
+app.use(express.static('public'));
+app.use(express.urlencoded({ extended: true }));
 
 // html routes
 // GET /notes should return the notes.html
@@ -38,16 +40,58 @@ app.get('/', (req, res) =>
 // GET /api/notes should read the db.json and return all saved notes as JSON
 app.get('/api/notes', (req, res) => {
     // read db.json and return it's contents as JSON
-    res.json()
+    res.json(noteData);
 });
 
 // POST /api/notes should receive a new note to save on the request body
-// add it to the db.json file
-// give each note a unique id when it's saved using an npm package
+app.post('/api/notes', (req, res) => {
+    console.info(`${req.method} request received to add a note`);
+    const { title, text } = req.body;
+    
+    if (title && text) {
+        const newNote = {
+            title,
+            text,
+            id: uuid()
+            // give each note a unique id when it's saved
 
-// return the new note to the client
+        }
+        // add the note to the db.json file
+        fs.readFile('./db/db.json', 'utf8', (err, data) => {
+            if (err) {
+              console.error(err);
+            } else {
+              const parsedNotes = JSON.parse(data);
+              parsedNotes.push(newNote);
+      
+              // Write updated notes back to the file
+              fs.writeFile(
+                './db/db.json',
+                JSON.stringify(parsedNotes, null, 4),
+                (writeErr) =>
+                  writeErr
+                    ? console.error(writeErr)
+                    : console.info('Successfully updated reviews!')
+              );
+            }
+          });
 
-// deleteNote delete request
+        // return the new note to the client
+        const response = {
+            status: 'success',
+            body: newNote,
+          };
+      
+        console.log(response);
+        res.status(201).json(response);
+    } else {
+        res.status(500).json('Error in posting review');
+    }
+
+});
+
+
+// deleteNote delete request, bonus
 
 app.listen(PORT, () =>
   console.info(`Example app listening at http://localhost:${PORT} 🚀`)
